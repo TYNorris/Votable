@@ -6,11 +6,11 @@
              mc:Ignorable="d"
              x:Class="Votable.MainPage">
 
-    <StackLayout>
+    <StackLayout Margin="10,35,10,10">
         <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+        <Label Text="Votable" 
+               HorizontalOptions="Center"
+               FontAttributes="Bold"/>
 
+    </StackLayout>
 </ContentPage>
