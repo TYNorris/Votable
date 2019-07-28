@@ -19,6 +19,7 @@ namespace Votable
 
         protected override void OnStart()
         {
+            IoC.Init();
             // Handle when your app starts
         }
 

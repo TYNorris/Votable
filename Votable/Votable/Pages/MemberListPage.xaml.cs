@@ -20,20 +20,10 @@ namespace Votable.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            var Members = new List<MemberViewModel>();
-
-            for(var i = 0; i< 10; i++)
+            if(BindingContext is BaseViewModel vm)
             {
-                Members.Add(new MemberViewModel(new Member()
-                {
-                    FirstName = "Test",
-                    LastName = i.ToString(),
-                    Party = i%2 ==0 ? "Democrat": "Republican"
-                }));
+                vm.OnShow();
             }
-
-            listView.ItemsSource = Members.ToList();
         }
 
 
@@ -47,5 +37,6 @@ namespace Votable.Views
                 });
             }
         }
+
     }
 }

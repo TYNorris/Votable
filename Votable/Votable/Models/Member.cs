@@ -7,6 +7,7 @@ namespace Votable.Models
 {
     public class Member
     {
+        #region Public Properties
         [JsonProperty(PropertyName = "id")]
         public string ID { get; set; }
 
@@ -141,6 +142,13 @@ namespace Votable.Models
 
         [JsonProperty(PropertyName = "votes_with_party_pct")]
         public string VoteWithPartyPervent { get; set; }
+        #endregion Public Properties
 
+        #region Constructor
+        public Member()
+        {
+        }
+
+        #endregion
     }
 }
