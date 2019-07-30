@@ -3,16 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Votable.ViewModels"  
              mc:Ignorable="d"
              x:Class="Votable.Views.MemberDetailPage">
+    <ContentPage.BindingContext>
+        <vm:MemberViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Member Details"
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Text="{Binding FullName}"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
-            <Label Text="{Binding FullName}"
+            <Label Grid.Row="1" Text="{Binding Subtitle}"
                    VerticalOptions="CenterAndExpand"
                    HorizontalOptions="CenterAndExpand"/>
-        </StackLayout>
+            <Label Grid.Row="2" Text="{Binding Position}"
+                   VerticalOptions="CenterAndExpand"
+                   HorizontalOptions="CenterAndExpand"/>
+            <Grid HorizontalOptions="CenterAndExpand"
+                  Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Text="{Binding MissedVotePct}"
+                       HorizontalOptions="CenterAndExpand"/>
+                <Label Grid.Column="1" Text="{Binding WithPartyPct}"
+                       HorizontalOptions="CenterAndExpand"/>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

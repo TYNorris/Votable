@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,24 +17,36 @@ namespace Votable
 
         public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
 
-
+        private static readonly JsonSerializerSettings serialSettings = new JsonSerializerSettings()
+        {
+            Error = ErrorHandler,
+            NullValueHandling = NullValueHandling.Ignore,
+            
+        };
 
         public List<Member> Senators { get; set; }
-
+         
         public CongressAPI()
         {
             Senators = new List<Member>();
             Client.AddDefaultHeader("X-API-Key", "JrgAgCmlGCEmD0q4CoLRLzQ0IJlMGQntG9X0CqGJ");
+            Client.Timeout = 60000;
             Task.Run(() =>
             {
-                var result = Client.Execute<RestResult<Chamber>>(new RestRequest("senate/members.json"));
-                if(result.IsSuccessful)
+                var result = Client.Execute(new RestRequest("senate/members.json"));
+                if (result.IsSuccessful)
                 {
-                    Senators = result.Data.Results.First().Members;
+                    var data = JsonConvert.DeserializeObject<RestResult<Chamber>>(result.Content, serialSettings);
+                    Senators = data.Results.First().Members;
                     OnPropertyChanged(nameof(Senators));
                 }
 
             });
+        }
+
+        public static void ErrorHandler(object sender, EventArgs e)
+        {
+            
         }
 
         public void OnPropertyChanged(string name)

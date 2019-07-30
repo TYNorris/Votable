@@ -33,7 +33,7 @@ namespace Votable.Views
             {
                 await Navigation.PushAsync(new MemberDetailPage
                 {
-                    BindingContext = e.SelectedItem as Member
+                    BindingContext = e.SelectedItem as MemberViewModel
                 });
             }
         }

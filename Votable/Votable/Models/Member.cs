@@ -138,10 +138,10 @@ namespace Votable.Models
         public string LIS_ID { get; set; }
         [JsonProperty(PropertyName = "missed_votes_pct")]
 
-        public double MissedVotePercent { get; set; }
+        public double MissedVotePct { get; set; }
 
         [JsonProperty(PropertyName = "votes_with_party_pct")]
-        public string VoteWithPartyPervent { get; set; }
+        public double VoteWithPartyPct { get; set; }
         #endregion Public Properties
 
         #region Constructor
