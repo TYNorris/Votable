@@ -7,7 +7,7 @@ namespace Votable.Models
 {
     public class Member
     {
-        #region Public Properties
+        #region JSON Properties
         [JsonProperty(PropertyName = "id")]
         public string ID { get; set; }
 

@@ -11,12 +11,12 @@ namespace Votable
 {
     public static class IoC
     {
-        private static CongressAPI api;
+        public static CongressAPI API;
         public static void Init()
         {
-            api = new CongressAPI();
+            API = new CongressAPI();
             Members = new ObservableCollection<MemberViewModel>();
-            api.PropertyChanged += APIDataChanged;
+            API.PropertyChanged += APIDataChanged;
         }
 
         public static void APIDataChanged(object sendre, PropertyChangedEventArgs e)
@@ -24,7 +24,7 @@ namespace Votable
             if (e.PropertyName.Equals(nameof(CongressAPI.Senators)))
             {
                 Members.Clear();
-                foreach(var s in api.Senators)
+                foreach(var s in API.Senators)
                 {
                     Members.Add(new MemberViewModel(s));
                 }

@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 namespace Votable.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MemberDetailPage : ContentPage
+    public partial class MemberDetailPage : BasePage
     {
         public MemberDetailPage()
         {

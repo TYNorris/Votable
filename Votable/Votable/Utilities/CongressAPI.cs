@@ -12,7 +12,7 @@ namespace Votable
 {
     public class CongressAPI : INotifyPropertyChanged
     {
-        private static readonly string baseURL = @"https://api.propublica.org/congress/v1/116/";
+        private static readonly string baseURL = @"https://api.propublica.org/congress/v1/";
         RestClient Client = new RestClient(baseURL);
 
         public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
@@ -33,15 +33,37 @@ namespace Votable
             Client.Timeout = 60000;
             Task.Run(() =>
             {
-                var result = Client.Execute(new RestRequest("senate/members.json"));
+                var result = Client.Execute(new RestRequest("116/senate/members.json"));
                 if (result.IsSuccessful)
                 {
                     var data = JsonConvert.DeserializeObject<RestResult<Chamber>>(result.Content, serialSettings);
-                    Senators = data.Results.First().Members;
+                    var results = data.Results.First().Members;
+                    foreach(var s in results)
+                    {
+                        Senators.Add(s);
+                    }
                     OnPropertyChanged(nameof(Senators));
+
                 }
 
             });
+        }
+
+        public async Task<List<Bill>> BillsByMemberAsync(string memberID)
+        {
+           return await Task.Run(() =>
+           {
+               var billResult = Client.Execute(new RestRequest("members/" + memberID + "/bills/introduced.json"));
+               if (billResult.IsSuccessful)
+               {
+                   var billData = JsonConvert.DeserializeObject<RestResult<MemberResult>>(billResult.Content, serialSettings);
+                   return billData.Results.First().Bills;
+               }
+               else
+               {
+                   return new List<Bill>();
+               }
+           });
         }
 
         public static void ErrorHandler(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using Votable.Models;
@@ -22,6 +23,8 @@ namespace Votable.ViewModels
         public double MissedVotePct => _Member.MissedVotePct;
 
         public string PhoneNumber => _Member.PhoneNumber;
+
+        public ObservableCollection<BillViewModel> Bills { get; set; }
         #endregion
 
         #region Private Properties
@@ -34,6 +37,7 @@ namespace Votable.ViewModels
         public MemberViewModel(Member mem)
         {
             _Member = mem;
+            Bills = new ObservableCollection<BillViewModel>();
         }
 
         public MemberViewModel()
@@ -50,7 +54,25 @@ namespace Votable.ViewModels
                 MissedVotePct = 2.4,
                 PhoneNumber = "202-222-2222"
             };
+            Bills = new ObservableCollection<BillViewModel>();
         }
         #endregion
+
+        #region Public Methods
+        public override void OnShow()
+        {
+            base.OnShow();
+            Update();
+        }
+        #endregion Public Methods
+
+        private async void Update()
+        {
+            var bills = await IoC.API.BillsByMemberAsync(_Member.ID);
+            foreach(var b in bills)
+            {
+                Bills.Add(new BillViewModel(b));
+            }
+        }
     }
 }

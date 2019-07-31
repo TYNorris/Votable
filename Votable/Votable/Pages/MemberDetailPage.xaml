@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<local:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:Votable.ViewModels"  
+             xmlns:vm="clr-namespace:Votable.ViewModels"
+             xmlns:local="clr-namespace:Votable"  
              mc:Ignorable="d"
              x:Class="Votable.Views.MemberDetailPage">
-    <ContentPage.BindingContext>
+    <local:BasePage.BindingContext>
         <vm:MemberViewModel/>
-    </ContentPage.BindingContext>
-    <ContentPage.Content>
+    </local:BasePage.BindingContext>
+    <local:BasePage.Content>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -37,6 +39,16 @@
                 <Label Grid.Column="1" Text="{Binding WithPartyPct}"
                        HorizontalOptions="CenterAndExpand"/>
             </Grid>
+            <ListView Grid.Row="4"
+              Margin="20"
+              ItemsSource="{Binding Bills}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding ShortTitle}"
+                          Detail="{Binding Subtitle}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
-    </ContentPage.Content>
-</ContentPage>
+    </local:BasePage.Content>
+</local:BasePage>

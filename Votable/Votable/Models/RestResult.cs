@@ -26,4 +26,16 @@ namespace Votable.Models
 
 
     }
+
+    public class MemberResult
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string MemberID { get; set; }
+
+        [JsonProperty(PropertyName = "name")]
+        public string MemberName { get; set; }
+
+        [JsonProperty(PropertyName = "bills")]
+        public List<Bill> Bills { get; set; }
+    }
 }

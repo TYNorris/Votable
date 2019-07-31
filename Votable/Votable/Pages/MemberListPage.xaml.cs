@@ -11,19 +11,11 @@ using Votable.ViewModels;
 namespace Votable.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MemberListPage : ContentPage
+    public partial class MemberListPage : BasePage
     {
         public MemberListPage()
         {
             InitializeComponent();
-        }
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            if(BindingContext is BaseViewModel vm)
-            {
-                vm.OnShow();
-            }
         }
 
 
