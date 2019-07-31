@@ -19,8 +19,14 @@ namespace Votable
             API.PropertyChanged += APIDataChanged;
         }
 
-        public static void APIDataChanged(object sendre, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Update data from API when available
+        /// </summary>
+        /// <param name="sendre"></param>
+        /// <param name="e"></param>
+        public static void APIDataChanged(object sender, PropertyChangedEventArgs e)
         {
+            //Update current list of senators 
             if (e.PropertyName.Equals(nameof(CongressAPI.Senators)))
             {
                 Members.Clear();

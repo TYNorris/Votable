@@ -17,5 +17,14 @@ namespace Votable
                 vm.OnShow();
             }
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            if (BindingContext is BaseViewModel vm)
+            {
+                vm.OnHide();
+            }
+        }
     }
 }

@@ -9,6 +9,10 @@ namespace Votable
     {
         public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
 
+        /// <summary>
+        /// Trigger property changed
+        /// </summary>
+        /// <param name="name"></param>
         public void OnPropertyChanged(string name)
         {
             try
@@ -21,31 +25,15 @@ namespace Votable
             }
         }
 
-        private RelayCommand _showCommand { get; set; }
 
-        private RelayCommand _hideCommand { get; set; }
-        public RelayCommand OnShowCommand
-        {
-            get
-            {
-                if (_showCommand == null)
-                    _showCommand = new RelayCommand(new Action(OnShow));
-                return _showCommand;
-
-            }
-        }
-        public RelayCommand OnHideCommand
-        {
-            get
-            {
-                if (_hideCommand == null)
-                    _hideCommand = new RelayCommand(new Action(OnHide));
-                return _hideCommand;
-
-            }
-        }
-
+        /// <summary>
+        /// Called when page appears
+        /// </summary>
         public virtual void OnShow() { }
+
+        /// <summary>
+        /// Callded when page disappears
+        /// </summary>
         public virtual void OnHide() { }
     }
 }

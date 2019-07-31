@@ -42,6 +42,7 @@ namespace Votable.ViewModels
 
         public MemberViewModel()
         {
+            //Template data for XAML
             _Member = new Member()
             {
                 FirstName = "Test",
@@ -69,6 +70,7 @@ namespace Votable.ViewModels
         private async void Update()
         {
             var bills = await IoC.API.BillsByMemberAsync(_Member.ID);
+            bills.Clear();
             foreach(var b in bills)
             {
                 Bills.Add(new BillViewModel(b));
