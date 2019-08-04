@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Votable.Models;
 
 namespace Votable
 {
@@ -13,15 +14,24 @@ namespace Votable
     // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
 
-    public partial class MainPage : ContentPage
+    public partial class MainPage : MasterDetailPage
     {
         string _fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "notes.txt");
 
         public MainPage()
         {
             InitializeComponent();
-
+            masterPage.navList.ItemSelected += OnItemSelected;
         }
 
+        void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            if( e.SelectedItem is NavMenuItem item)
+            {
+                Detail = new NavigationPage((Page)Activator.CreateInstance(item.Target));
+                masterPage.navList.SelectedItem = null;
+                IsPresented = false;
+            }
+        }
     }
 }

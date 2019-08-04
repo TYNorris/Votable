@@ -38,7 +38,7 @@ namespace Votable
             Task.Run(() =>
             {
                 IoC.Ready.WaitOne(10000);
-                MainPage = new NavigationPage(new MemberListPage());
+                MainPage = new MainPage();
             });
         }
 
