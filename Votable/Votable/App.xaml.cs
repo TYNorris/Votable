@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
+using Votable.Pages;
 using Votable.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,12 +16,13 @@ namespace Votable
         {
             InitializeComponent();
             FolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
-            MainPage = new NavigationPage(new MemberListPage());
+            MainPage = new LoadingPage();
         }
 
         protected override void OnStart()
         {
             IoC.Init();
+            OnResume();
             // Handle when your app starts
         }
 
@@ -31,6 +34,14 @@ namespace Votable
         protected override void OnResume()
         {
             // Handle when your app resumes
+            MainPage = new LoadingPage();
+            Task.Run(() =>
+            {
+                IoC.Ready.WaitOne(10000);
+                MainPage = new NavigationPage(new MemberListPage());
+            });
         }
+
     }
+
 }

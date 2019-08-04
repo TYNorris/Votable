@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Votable.Models;
 using Votable.ViewModels;
 
@@ -12,8 +13,11 @@ namespace Votable
     public static class IoC
     {
         public static CongressAPI API;
+
+        public static ManualResetEvent Ready;
         public static void Init()
         {
+            Ready = new ManualResetEvent(false);
             API = new CongressAPI();
             Members = new ObservableCollection<MemberViewModel>();
             API.PropertyChanged += APIDataChanged;
@@ -34,6 +38,7 @@ namespace Votable
                 {
                     Members.Add(new MemberViewModel(s));
                 }
+                Ready.Set();
             }
         }
 
