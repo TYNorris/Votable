@@ -26,6 +26,7 @@ namespace Votable
             Container = SimpleIoc.Default;
             Ready = new ManualResetEvent(false);
             Senators = new ObservableCollection<MemberViewModel>();
+            Container.Register<FileService>(true);
             Container.Register<NavigationService>(true);
             Container.Register<CongressAPI>(true);
             API = Get<CongressAPI>();

@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Votable.Models;
+using Votable.Utilities;
 
 namespace Votable
 {
@@ -46,16 +47,9 @@ namespace Votable
          
         public CongressAPI()
         {
-            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(CongressAPI)).Assembly;
-            Stream stream = assembly.GetManifestResourceStream("Votable.Keys.json");
-            string text = "";
-            using (var reader = new System.IO.StreamReader(stream))
-            {
-                text = reader.ReadToEnd();
-            }
-
-            JObject Keys = JObject.Parse( text);
+            JObject Keys = JObject.Parse( IoC.Get<FileService>().GetEmbeddedResource("Keys.json"));
             Senators = new List<Member>();
+
             //Add api key and extend timeout
             ProPublica.AddDefaultHeader("X-API-Key", Keys["ProPublica"].ToString());
             googleAPIkey = Keys["Google"].ToString();
@@ -105,6 +99,26 @@ namespace Votable
                    return new List<Bill>();
                }
            });
+        }
+
+        public async Task<List<Vote>> VotesByMemberAsync(string memberID)
+        {
+            return await Task.Run(() =>
+            {
+                //querry bills from specific member
+                var voteResult = ProPublica.Execute(new RestRequest("members/" + memberID + "/votes.json"));
+                if (voteResult.IsSuccessful)
+                {
+                    //Get data from result
+                    var voteDate = JsonConvert.DeserializeObject<RestResult<MemberResult>>(voteResult.Content, serialSettings);
+                    return voteDate.Results.First().Votes;
+                }
+                else
+                {
+                    //Return empty result on fail
+                    return new List<Vote>();
+                }
+            });
         }
 
         public async Task<string> StateCodeByAddress(string address)

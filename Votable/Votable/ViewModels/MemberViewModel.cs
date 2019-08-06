@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using Votable.Base;
 using Votable.Models;
@@ -31,6 +32,7 @@ namespace Votable.ViewModels
         public string State => _Member.State;
 
         public ObservableCollection<BillViewModel> Bills { get; set; }
+        public ObservableCollection<VoteViewModel> Votes { get; set; }
         #endregion
 
         #region Private Properties
@@ -44,6 +46,7 @@ namespace Votable.ViewModels
         {
             _Member = mem;
             Bills = new ObservableCollection<BillViewModel>();
+            Votes = new ObservableCollection<VoteViewModel>();
             SelectedCommand = new RelayCommand(() => NavigateHere());
         }
 
@@ -63,6 +66,7 @@ namespace Votable.ViewModels
                 PhoneNumber = "202-222-2222"
             };
             Bills = new ObservableCollection<BillViewModel>();
+            Votes = new ObservableCollection<VoteViewModel>();
         }
         #endregion
 
@@ -80,14 +84,29 @@ namespace Votable.ViewModels
         #endregion Public Methods
 
         #region Private Methods
-        
+
         private async void Update()
         {
             var bills = await IoC.API.BillsByMemberAsync(_Member.ID);
-            bills.Clear();
-            foreach(var b in bills)
+
+            if (bills.Any())
             {
-                Bills.Add(new BillViewModel(b));
+                Bills.Clear();
+                for (var i = 0; i < 5; i++)
+                {
+                    Bills.Add(new BillViewModel(bills[i]));
+                }
+            }
+
+            var votes = await IoC.API.VotesByMemberAsync(_Member.ID);
+
+            if (votes.Any())
+            {
+                Votes.Clear();
+                for (var i = 0; i < 5; i++)
+                {
+                    Votes.Add(new VoteViewModel(votes[i]));
+                }
             }
         }
 

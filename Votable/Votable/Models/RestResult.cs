@@ -37,5 +37,8 @@ namespace Votable.Models
 
         [JsonProperty(PropertyName = "bills")]
         public List<Bill> Bills { get; set; }
+
+        [JsonProperty(PropertyName = "votes")]
+        public List<Vote> Votes { get; set; }
     }
 }
