@@ -19,16 +19,5 @@ namespace Votable.Views
         }
 
 
-        async void OnListViewItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            if (e.SelectedItem != null)
-            {
-                await Navigation.PushAsync(new MemberDetailPage
-                {
-                    BindingContext = e.SelectedItem as MemberViewModel
-                });
-            }
-        }
-
     }
 }

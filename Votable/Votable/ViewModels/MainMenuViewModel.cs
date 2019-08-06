@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using Votable.Models;
+using Votable.Pages;
 using Votable.Views;
 
 namespace Votable.ViewModels
@@ -15,7 +16,7 @@ namespace Votable.ViewModels
         {
             Pages = new ObservableCollection<NavMenuItem>()
             {
-                new NavMenuItem("Home", "temp.png", typeof(MemberListPage)),
+                new NavMenuItem("Home", "temp.png", typeof(HomePage)),
                 new NavMenuItem("Senators", "temp.png", typeof(MemberListPage)),
             };
 

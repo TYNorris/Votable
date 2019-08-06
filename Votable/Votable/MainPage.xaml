@@ -15,7 +15,7 @@
     <MasterDetailPage.Detail>
         <NavigationPage>
             <x:Arguments>
-                <v:LoadingPage />
+                <v:HomePage />
             </x:Arguments>
         </NavigationPage>
     </MasterDetailPage.Detail>

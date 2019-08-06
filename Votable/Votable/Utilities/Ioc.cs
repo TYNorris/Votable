@@ -1,11 +1,14 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Votable.Models;
+using Votable.Utilities;
 using Votable.ViewModels;
 
 namespace Votable
@@ -15,14 +18,23 @@ namespace Votable
         public static CongressAPI API;
 
         public static ManualResetEvent Ready;
+
+        private static ISimpleIoc Container;
+        
         public static void Init()
         {
+            Container = SimpleIoc.Default;
             Ready = new ManualResetEvent(false);
-            API = new CongressAPI();
-            Members = new ObservableCollection<MemberViewModel>();
+            Senators = new ObservableCollection<MemberViewModel>();
+            Container.Register<NavigationService>(true);
+            Container.Register<CongressAPI>(true);
+            API = Get<CongressAPI>();
             API.PropertyChanged += APIDataChanged;
         }
 
+        public static T Get<T>() => Container.GetInstance<T>();
+                    
+   
         /// <summary>
         /// Update data from API when available
         /// </summary>
@@ -33,15 +45,25 @@ namespace Votable
             //Update current list of senators 
             if (e.PropertyName.Equals(nameof(CongressAPI.Senators)))
             {
-                Members.Clear();
+                Senators.Clear();
                 foreach(var s in API.Senators)
                 {
-                    Members.Add(new MemberViewModel(s));
+                    Senators.Add(new MemberViewModel(s));
                 }
                 Ready.Set();
             }
         }
 
-        public static ObservableCollection<MemberViewModel> Members { get; private set; }
+        public static async  Task<IEnumerable<MemberViewModel>> SenatorsByAddress(string address)
+        {
+            var state = await API.StateCodeByAddress(address);
+            if (!string.IsNullOrEmpty(state))
+            {
+                return Senators.Where(s => s.State.Equals(state, StringComparison.OrdinalIgnoreCase));
+            }
+            else return new List<MemberViewModel>();
+        }
+
+        public static ObservableCollection<MemberViewModel> Senators { get; private set; }
     }
 }

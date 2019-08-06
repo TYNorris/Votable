@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace Votable.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainMenuPage : BasePage
+    public partial class HomePage : BasePage
     {
-        public MainMenuPage()
+        public HomePage()
         {
             InitializeComponent();
         }

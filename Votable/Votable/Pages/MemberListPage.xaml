@@ -14,12 +14,11 @@
         <StackLayout>
             <ListView x:Name="listView"
               Margin="20"
-              ItemsSource="{Binding Members}"
-              ItemSelected="OnListViewItemSelected">
+              ItemsSource="{Binding Members}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding FullName}"
-                          Detail="{Binding Subtitle}" />
+                          Detail="{Binding Subtitle}" Command="{Binding SelectedCommand}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

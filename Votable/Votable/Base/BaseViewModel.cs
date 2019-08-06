@@ -25,6 +25,7 @@ namespace Votable
             }
         }
 
+        public List<string> UpdatingProperties { get; private set; } = new List<string>();
 
         /// <summary>
         /// Called when page appears
@@ -35,5 +36,23 @@ namespace Votable
         /// Callded when page disappears
         /// </summary>
         public virtual void OnHide() { }
+
+        public void LockProperty(string property)
+        {
+            if(!UpdatingProperties.Contains(property))
+            {
+                UpdatingProperties.Add(property);
+            }
+        }
+
+        public void UnlockProperty(string property)
+        {
+            if (UpdatingProperties.Contains(property))
+            {
+                UpdatingProperties.Remove(property);
+            }
+        }
+
+        public bool IsPropertyFree(string property) => !UpdatingProperties.Contains(property);
     }
 }

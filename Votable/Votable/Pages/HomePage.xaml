@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<local:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Votable.ViewModels"
+             xmlns:local="clr-namespace:Votable"
+             mc:Ignorable="d"
+             x:Class="Votable.Pages.HomePage">
+    <ContentPage.BindingContext>
+        <vm:UserViewModel/>
+    </ContentPage.BindingContext>
+        <StackLayout>
+            <Label Text="Welcome Votable!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Margin="20">
+            <Label Text="Address:"></Label>
+            <Entry Text="{Binding Address}"></Entry>
+        </StackLayout>
+        <ListView x:Name="listView"
+              Margin="20"
+              ItemsSource="{Binding Reps}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding FullName}"
+                          Detail="{Binding Subtitle}" 
+                              Command="{Binding SelectedCommand}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+   
+</local:BasePage>

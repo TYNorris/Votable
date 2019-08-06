@@ -24,7 +24,7 @@ namespace Votable.ViewModels
         public override void OnShow()
         {
             base.OnShow();
-            Members = IoC.Members;
+            Members = IoC.Senators;
         }
 
     }

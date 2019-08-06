@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using Votable.Base;
 using Votable.Models;
+using Votable.Utilities;
+using Votable.Views;
+using Xamarin.Forms;
 
 namespace Votable.ViewModels
 {
@@ -24,6 +28,8 @@ namespace Votable.ViewModels
 
         public string PhoneNumber => _Member.PhoneNumber;
 
+        public string State => _Member.State;
+
         public ObservableCollection<BillViewModel> Bills { get; set; }
         #endregion
 
@@ -38,6 +44,7 @@ namespace Votable.ViewModels
         {
             _Member = mem;
             Bills = new ObservableCollection<BillViewModel>();
+            SelectedCommand = new RelayCommand(() => NavigateHere());
         }
 
         public MemberViewModel()
@@ -59,6 +66,11 @@ namespace Votable.ViewModels
         }
         #endregion
 
+        #region Commands
+
+        public RelayCommand  SelectedCommand { get; set; }
+        #endregion
+
         #region Public Methods
         public override void OnShow()
         {
@@ -67,6 +79,8 @@ namespace Votable.ViewModels
         }
         #endregion Public Methods
 
+        #region Private Methods
+        
         private async void Update()
         {
             var bills = await IoC.API.BillsByMemberAsync(_Member.ID);
@@ -76,5 +90,11 @@ namespace Votable.ViewModels
                 Bills.Add(new BillViewModel(b));
             }
         }
+
+        private async void NavigateHere()
+        {
+            await IoC.Get<NavigationService>().NavigateToMember(this);
+        }
+        #endregion
     }
 }

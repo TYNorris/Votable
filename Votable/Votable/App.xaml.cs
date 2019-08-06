@@ -1,7 +1,9 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Ioc;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Votable.Pages;
+using Votable.Utilities;
 using Votable.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -12,6 +14,7 @@ namespace Votable
     {
         public static string FolderPath { get; internal set; }
 
+        public INavigation Navigation => (MainPage as MainPage).Detail.Navigation;
         public App()
         {
             InitializeComponent();
@@ -19,11 +22,12 @@ namespace Votable
             MainPage = new LoadingPage();
         }
 
+
         protected override void OnStart()
         {
             IoC.Init();
-            OnResume();
             // Handle when your app starts
+            OnResume();
         }
 
         protected override void OnSleep()
@@ -34,7 +38,6 @@ namespace Votable
         protected override void OnResume()
         {
             // Handle when your app resumes
-            MainPage = new LoadingPage();
             Task.Run(() =>
             {
                 IoC.Ready.WaitOne(10000);

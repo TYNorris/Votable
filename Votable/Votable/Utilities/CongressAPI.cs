@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Org.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -15,11 +17,20 @@ namespace Votable
         /// <summary>
         /// Base url for propublic API
         /// </summary>
-        private static readonly string baseURL = @"https://api.propublica.org/congress/v1/";
+        private static readonly string proPublicaURL = @"https://api.propublica.org/congress/v1/";
+
+
+        private static readonly string googleCivicsURL = @"https://www.googleapis.com/civicinfo/v2/";
+
+
+        private static readonly string googleAPIkey = @"AIzaSyCrtKA3qdlzPOhh_usM7bSIdarftihs60M";
+
         /// <summary>
         /// API Client to Propublica API
         /// </summary>
-        RestClient Client = new RestClient(baseURL);
+        RestClient ProPublica = new RestClient(proPublicaURL);
+
+        RestClient GoogleCivics = new RestClient(googleCivicsURL);
 
         public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
 
@@ -33,20 +44,28 @@ namespace Votable
          
         public CongressAPI()
         {
+            
             Senators = new List<Member>();
             //Add api key and extend timeout
-            Client.AddDefaultHeader("X-API-Key", "JrgAgCmlGCEmD0q4CoLRLzQ0IJlMGQntG9X0CqGJ");
-            Client.Timeout = 60000;
+            ProPublica.AddDefaultHeader("X-API-Key", "JrgAgCmlGCEmD0q4CoLRLzQ0IJlMGQntG9X0CqGJ");
+            ProPublica.Timeout = 10000;
+            GoogleCivics.Timeout = 10000;
+
+            FetchSenators();
+        }
+
+        private void FetchSenators()
+        {
             Task.Run(() =>
             {
                 //query current senators
-                var result = Client.Execute(new RestRequest("116/senate/members.json"));
+                var result = ProPublica.Execute(new RestRequest("116/senate/members.json"));
                 if (result.IsSuccessful)
                 {
                     //Deserialize rest response
                     var data = JsonConvert.DeserializeObject<RestResult<Chamber>>(result.Content, serialSettings);
                     var results = data.Results.First().Members;
-                    foreach(var s in results)
+                    foreach (var s in results)
                     {
                         Senators.Add(s);
                     }
@@ -62,7 +81,7 @@ namespace Votable
            return await Task.Run(() =>
            {
                //querry bills from specific member
-               var billResult = Client.Execute(new RestRequest("members/" + memberID + "/bills/introduced.json"));
+               var billResult = ProPublica.Execute(new RestRequest("members/" + memberID + "/bills/introduced.json"));
                if (billResult.IsSuccessful)
                {
                    //Get data from result
@@ -76,6 +95,35 @@ namespace Votable
                }
            });
         }
+
+        public async Task<string> StateCodeByAddress(string address)
+        {
+            return await Task.Run(() =>
+            {
+                //querry bills from specific member
+                var repResult = GoogleCivics.Execute(new RestRequest("representatives?levels=country&roles=legislatorUpperBody&address=" + address +
+                                                                     "&key=" + googleAPIkey));
+                if (repResult.IsSuccessful)
+                {
+                    JObject response = JObject.Parse(repResult.Content);
+                    if(response["divisions"] != null)
+                    {
+                        var div = response["divisions"] as JObject;
+                        var location = div.Properties().Select(p => p.Name).First();
+                        return location.Split(':').Last();
+                    }
+
+                    return "";
+                }
+                else
+                {
+                    //Return empty result on fail
+                    return "";
+                }
+            });
+        }
+
+
 
         public static void ErrorHandler(object sender, EventArgs e)
         {
