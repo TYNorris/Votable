@@ -5,7 +5,9 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Votable.Models;
@@ -23,7 +25,7 @@ namespace Votable
         private static readonly string googleCivicsURL = @"https://www.googleapis.com/civicinfo/v2/";
 
 
-        private static readonly string googleAPIkey = @"AIzaSyCrtKA3qdlzPOhh_usM7bSIdarftihs60M";
+        private static string googleAPIkey = "";
 
         /// <summary>
         /// API Client to Propublica API
@@ -44,10 +46,19 @@ namespace Votable
          
         public CongressAPI()
         {
-            
+            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(CongressAPI)).Assembly;
+            Stream stream = assembly.GetManifestResourceStream("Votable.Keys.json");
+            string text = "";
+            using (var reader = new System.IO.StreamReader(stream))
+            {
+                text = reader.ReadToEnd();
+            }
+
+            JObject Keys = JObject.Parse( text);
             Senators = new List<Member>();
             //Add api key and extend timeout
-            ProPublica.AddDefaultHeader("X-API-Key", "JrgAgCmlGCEmD0q4CoLRLzQ0IJlMGQntG9X0CqGJ");
+            ProPublica.AddDefaultHeader("X-API-Key", Keys["ProPublica"].ToString());
+            googleAPIkey = Keys["Google"].ToString();
             ProPublica.Timeout = 10000;
             GoogleCivics.Timeout = 10000;
 
