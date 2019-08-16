@@ -98,6 +98,28 @@ namespace Votable
            });
         }
 
+        public async Task<Bill> BillByIDAsync(string billID)
+        {
+            var split = billID.Split('-');
+            var bill = split[0];
+            var number = split[1];
+            return await Task<Bill>.Run(async () =>
+            {
+                //querry bills from specific member
+                var data = await Query<RestResult<Bill>>(ProPublica, number + "/bills/" + bill + ".json");
+                if (data != null)
+                {
+                    //Get data from result
+                    return data.Results.First();
+                }
+                else
+                {
+                    //Return empty result on fail
+                    return null;
+                }
+            });
+        }
+
         public async Task<List<Vote>> VotesByMemberAsync(string memberID)
         {
             return await Task.Run(async () =>

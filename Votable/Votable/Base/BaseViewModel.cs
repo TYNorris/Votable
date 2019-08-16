@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Votable.Utilities;
 
 namespace Votable
 {
@@ -9,21 +10,6 @@ namespace Votable
     {
         public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
 
-        /// <summary>
-        /// Trigger property changed
-        /// </summary>
-        /// <param name="name"></param>
-        public void OnPropertyChanged(string name)
-        {
-            try
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-            catch (InvalidOperationException)
-            {
-
-            }
-        }
 
         public List<string> UpdatingProperties { get; private set; } = new List<string>();
 
@@ -37,6 +23,12 @@ namespace Votable
         /// </summary>
         public virtual void OnHide() { }
 
+
+        #region Public Methods
+        internal async void NavigateHere()
+        {
+            await IoC.Get<NavigationService>().NavigateToMember(this);
+        }
         public void LockProperty(string property)
         {
             if(!UpdatingProperties.Contains(property))
@@ -54,5 +46,34 @@ namespace Votable
         }
 
         public bool IsPropertyFree(string property) => !UpdatingProperties.Contains(property);
+
+
+        public void Init()
+        {
+            SelectedCommand = new RelayCommand(NavigateHere);
+        }
+
+        /// <summary>
+        /// Trigger property changed
+        /// </summary>
+        /// <param name="name"></param>
+        public void OnPropertyChanged(string name)
+        {
+            try
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+            catch (InvalidOperationException)
+            {
+
+            }
+        }
+
+        #endregion
+
+        #region Commands
+
+        public RelayCommand SelectedCommand { get; set; }
+        #endregion
     }
 }

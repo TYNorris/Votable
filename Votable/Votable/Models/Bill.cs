@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Votable.Models
 {
-    public class Bill
+    public class Bill: BaseModel
     {
         #region JSON Properties
         [JsonProperty(PropertyName = "bill_id")]
@@ -45,6 +46,41 @@ namespace Votable.Models
 
         [JsonProperty(PropertyName = "primary_subject")]
         public string Subject { get; set; }
+
+        [JsonProperty(PropertyName ="last_vote")]
+        public DateTime LastVote { get; set; }
+
+        [JsonProperty(PropertyName = "house_passage")]
+        public DateTime HousePassageDate { get; set; }
+
+        [JsonProperty(PropertyName = "senate_passage")]
+        public DateTime SenatePassageDate { get; set; }
+
+        [JsonProperty(PropertyName = "enacted")]
+        public DateTime EnactedDate { get; set; }
+
+        [JsonProperty(PropertyName = "vetoed")]
+        public DateTime VetoedDate { get; set; }
+
+        [JsonProperty(PropertyName = "comittee_codes")]
+        public string[] ComitteeCodes { get; set; }
+
+        [JsonProperty(PropertyName = "summary")]
+        public string Summary { get; set; }
+
+        [JsonProperty(PropertyName = "short_summary")]
+        public string ShortSummary { get; set; }
+
+        [JsonProperty(PropertyName = "versions")]
+        public JObject[] Versions { get; set; }
+
+        [JsonProperty(PropertyName = "actions")]
+        public JObject[] Actions { get; set; }
+        #endregion
+
+        #region Public Properties
+
+        public bool DetailsAdded { get; set; } = false;
         #endregion
     }
 }

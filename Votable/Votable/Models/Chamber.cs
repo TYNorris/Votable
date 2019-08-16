@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Votable.Models
 {
-    public class Chamber
+    public class Chamber : BaseModel
     {
         #region Public Properties
         [JsonProperty(PropertyName = "congress")]

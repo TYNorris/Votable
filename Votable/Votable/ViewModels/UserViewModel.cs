@@ -27,6 +27,7 @@ namespace Votable.ViewModels
         {
             Reps = new ObservableCollection<MemberViewModel>();
             Address = "02134";
+            Init();
         }
 
         public override void OnShow()

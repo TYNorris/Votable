@@ -47,7 +47,7 @@ namespace Votable.ViewModels
             _Member = mem;
             Bills = new ObservableCollection<BillViewModel>();
             Votes = new ObservableCollection<VoteViewModel>();
-            SelectedCommand = new RelayCommand(() => NavigateHere());
+            Init();
         }
 
         public MemberViewModel()
@@ -67,13 +67,10 @@ namespace Votable.ViewModels
             };
             Bills = new ObservableCollection<BillViewModel>();
             Votes = new ObservableCollection<VoteViewModel>();
+            Init();
         }
         #endregion
 
-        #region Commands
-
-        public RelayCommand  SelectedCommand { get; set; }
-        #endregion
 
         #region Public Methods
         public override void OnShow()
@@ -110,10 +107,7 @@ namespace Votable.ViewModels
             }
         }
 
-        private async void NavigateHere()
-        {
-            await IoC.Get<NavigationService>().NavigateToMember(this);
-        }
+
         #endregion
     }
 }

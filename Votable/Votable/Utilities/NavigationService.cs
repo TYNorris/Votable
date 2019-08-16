@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Votable.Pages;
 using Votable.ViewModels;
 using Votable.Views;
 using Xamarin.Forms;
@@ -16,14 +17,22 @@ namespace Votable.Utilities
         {
 
         }
-        public async Task NavigateToMember(MemberViewModel vm)
+        public async Task NavigateToMember(BaseViewModel vm)
         {
-            
+            if (vm is MemberViewModel member)
+            {
                 await (App.Current as App).Navigation.PushAsync(new MemberDetailPage()
                 {
-                    BindingContext = vm
+                    BindingContext = member
                 });
-            
+            }
+            else if(vm is BillViewModel bill)
+            {
+                await (App.Current as App).Navigation.PushAsync(new BillDetailPage()
+                {
+                    BindingContext = bill
+                });
+            }
         }
 
     }

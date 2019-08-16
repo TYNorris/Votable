@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Votable.Models
 {
-    public class Vote
+    public class Vote : BaseModel
     {
 
         [JsonProperty(PropertyName = "member_id")]

@@ -49,7 +49,7 @@
               ItemsSource="{Binding Bills}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding ShortTitle}"
+                        <TextCell Text="{Binding ShortTitle}" Command="{Binding SelectedCommand}"
                           Detail="{Binding SubTitle}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
