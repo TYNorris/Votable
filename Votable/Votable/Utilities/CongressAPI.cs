@@ -61,14 +61,12 @@ namespace Votable
 
         private void FetchSenators()
         {
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 //query current senators
-                var result = ProPublica.Execute(new RestRequest("116/senate/members.json"));
-                if (result.IsSuccessful)
+                var data = await Query<RestResult<Chamber>>(ProPublica, "116/senate/members.json");
+                if (data != null)
                 {
-                    //Deserialize rest response
-                    var data = JsonConvert.DeserializeObject<RestResult<Chamber>>(result.Content, serialSettings);
                     var results = data.Results.First().Members;
                     foreach (var s in results)
                     {
@@ -83,15 +81,14 @@ namespace Votable
 
         public async Task<List<Bill>> BillsByMemberAsync(string memberID)
         {
-           return await Task.Run(() =>
+           return await Task.Run(async () =>
            {
                //querry bills from specific member
-               var billResult = ProPublica.Execute(new RestRequest("members/" + memberID + "/bills/introduced.json"));
-               if (billResult.IsSuccessful)
+               var data = await Query<RestResult<MemberResult>>(ProPublica, "members/" + memberID + "/bills/introduced.json");
+               if (data != null)
                {
                    //Get data from result
-                   var billData = JsonConvert.DeserializeObject<RestResult<MemberResult>>(billResult.Content, serialSettings);
-                   return billData.Results.First().Bills;
+                   return data.Results.First().Bills;
                }
                else
                {
@@ -103,15 +100,14 @@ namespace Votable
 
         public async Task<List<Vote>> VotesByMemberAsync(string memberID)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 //querry bills from specific member
-                var voteResult = ProPublica.Execute(new RestRequest("members/" + memberID + "/votes.json"));
-                if (voteResult.IsSuccessful)
+                var voteData = await Query<RestResult<MemberResult>>(ProPublica, "members/" + memberID + "/votes.json");
+                if (voteData != null)
                 {
                     //Get data from result
-                    var voteDate = JsonConvert.DeserializeObject<RestResult<MemberResult>>(voteResult.Content, serialSettings);
-                    return voteDate.Results.First().Votes;
+                    return voteData.Results.First().Votes;
                 }
                 else
                 {
@@ -123,14 +119,13 @@ namespace Votable
 
         public async Task<string> StateCodeByAddress(string address)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 //querry bills from specific member
-                var repResult = GoogleCivics.Execute(new RestRequest("representatives?levels=country&roles=legislatorUpperBody&address=" + address +
-                                                                     "&key=" + googleAPIkey));
-                if (repResult.IsSuccessful)
+                var response = await Query<JObject>(GoogleCivics, "representatives?levels=country&roles=legislatorUpperBody&address=" + address +
+                                                                     "&key=" + googleAPIkey);
+                if (response != null)
                 {
-                    JObject response = JObject.Parse(repResult.Content);
                     if(response["divisions"] != null)
                     {
                         var div = response["divisions"] as JObject;
@@ -149,8 +144,22 @@ namespace Votable
         }
 
 
+        private static async Task<T> Query<T>(RestClient Client, string extension)
+        {
+            return await Task.Run(() =>
+            {
+                //query current senators
+                var result = Client.Execute(new RestRequest(extension));
+                if (result.IsSuccessful)
+                {
+                    //Deserialize rest response
+                    return JsonConvert.DeserializeObject<T>(result.Content, serialSettings);
 
-        public static void ErrorHandler(object sender, EventArgs e)
+                }
+                return default;
+            });
+        }
+                public static void ErrorHandler(object sender, EventArgs e)
         {
            //Handle errors from Client requests 
         }
