@@ -26,6 +26,7 @@ namespace Votable
             Container = SimpleIoc.Default;
             Ready = new ManualResetEvent(false);
             Senators = new ObservableCollection<MemberViewModel>();
+            RecentBills = new ObservableCollection<BillViewModel>();
             Container.Register<FileService>(true);
             Container.Register<NavigationService>(true);
             Container.Register<CongressAPI>(true);
@@ -39,7 +40,7 @@ namespace Votable
         /// <summary>
         /// Update data from API when available
         /// </summary>
-        /// <param name="sendre"></param>
+        /// <param name="sender"></param>
         /// <param name="e"></param>
         public static void APIDataChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -53,6 +54,14 @@ namespace Votable
                 }
                 Ready.Set();
             }
+            if (e.PropertyName.Equals(nameof(CongressAPI.AllBills)))
+            {
+                RecentBills.Clear();
+                foreach (var b in API.AllBills)
+                {
+                    RecentBills.Add(new BillViewModel(b));
+                }
+            }
         }
 
         public static async  Task<IEnumerable<MemberViewModel>> SenatorsByAddress(string address)
@@ -62,9 +71,10 @@ namespace Votable
             {
                 return Senators.Where(s => s.State.Equals(state, StringComparison.OrdinalIgnoreCase));
             }
-            else return new List<MemberViewModel>();
+            else return new List<MemberViewModel>();    
         }
 
         public static ObservableCollection<MemberViewModel> Senators { get; private set; }
+        public static ObservableCollection<BillViewModel> RecentBills { get; private set; }
     }
 }

@@ -76,11 +76,24 @@ namespace Votable.Models
 
         [JsonProperty(PropertyName = "actions")]
         public JObject[] Actions { get; set; }
+
+        [JsonProperty(PropertyName ="subjects")]
+        public List<BillSubject> Subjects { get; set; }
         #endregion
 
         #region Public Properties
 
         public bool DetailsAdded { get; set; } = false;
         #endregion
+    }
+
+    public struct BillSubject
+    {
+        [JsonProperty(PropertyName ="name")]
+
+        public  string Name { get; set; }
+
+        [JsonProperty(PropertyName = "url_name")]
+        public string URLExtension { get; set; }
     }
 }

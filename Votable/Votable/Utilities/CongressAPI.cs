@@ -44,12 +44,14 @@ namespace Votable
         };
 
         public List<Member> Senators { get; set; }
+
+        public List<Bill> AllBills { get; set; }
          
         public CongressAPI()
         {
             JObject Keys = JObject.Parse( IoC.Get<FileService>().GetEmbeddedResource("Keys.json"));
             Senators = new List<Member>();
-
+            AllBills = new List<Bill>();
             //Add api key and extend timeout
             ProPublica.AddDefaultHeader("X-API-Key", Keys["ProPublica"].ToString());
             googleAPIkey = Keys["Google"].ToString();
@@ -57,6 +59,7 @@ namespace Votable
             GoogleCivics.Timeout = 10000;
 
             FetchSenators();
+            FetchRecentBills();
         }
 
         private void FetchSenators()
@@ -73,6 +76,26 @@ namespace Votable
                         Senators.Add(s);
                     }
                     OnPropertyChanged(nameof(Senators));
+
+                }
+
+            });
+        }
+
+        private void FetchRecentBills()
+        {
+            Task.Run(async () =>
+            {
+                //query current senators
+                var data = await Query<RestResult<DatedResult>>(ProPublica, "115/both/bills/updated.json");
+                if (data != null)
+                {
+                    var results = data.Results.First().Bills;
+                    foreach (var s in results)
+                    {
+                        AllBills.Add(s);
+                    }
+                    OnPropertyChanged(nameof(AllBills));
 
                 }
 
@@ -100,24 +123,12 @@ namespace Votable
 
         public async Task<Bill> BillByIDAsync(string billID)
         {
-            var split = billID.Split('-');
-            var bill = split[0];
-            var number = split[1];
-            return await Task<Bill>.Run(async () =>
-            {
-                //querry bills from specific member
-                var data = await Query<RestResult<Bill>>(ProPublica, number + "/bills/" + bill + ".json");
-                if (data != null)
-                {
-                    //Get data from result
-                    return data.Results.First();
-                }
-                else
-                {
-                    //Return empty result on fail
-                    return null;
-                }
-            });
+            return await BillQuery(billID, ".json");
+        }
+
+        public async Task<Bill> BillSubjectsByIDAsync(string billID)
+        {
+            return await BillQuery(billID, "/subjects.json");
         }
 
         public async Task<List<Vote>> VotesByMemberAsync(string memberID)
@@ -165,6 +176,28 @@ namespace Votable
             });
         }
 
+
+        private async Task<Bill> BillQuery(string billID, string extension)
+        {
+            var split = billID.Split('-');
+            var bill = split[0];
+            var number = split[1];
+            return await Task<Bill>.Run(async () =>
+            {
+                //querry bills from specific member
+                var data = await Query<RestResult<Bill>>(ProPublica, number + "/bills/" + bill + extension);
+                if (data != null)
+                {
+                    //Get data from result
+                    return data.Results.First();
+                }
+                else
+                {
+                    //Return empty result on fail
+                    return null;
+                }
+            });
+        }
 
         private static async Task<T> Query<T>(RestClient Client, string extension)
         {

@@ -11,7 +11,7 @@ namespace Votable.ViewModels
 
         public string Title => _vote.Bill.Title;
 
-        public string SubTitle => _vote.Position + " - " + _vote.Result + " - " + _vote.Date;
+        public string Subtitle => _vote.Position + " - " + _vote.Result + " - " + _vote.Date;
 
         public VoteViewModel(Vote v)
         {

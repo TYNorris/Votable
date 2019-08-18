@@ -19,6 +19,8 @@ namespace Votable.ViewModels
 
         public string Subtitle => _Bill.Number + " - " + _Bill.Subject;
 
+        public List<BillSubject> Subjects => _Bill.Subjects;
+
         #endregion Public Properties
 
         #region Private Properties
@@ -56,6 +58,8 @@ namespace Votable.ViewModels
                 LockProperty(nameof(_Bill));
                 var details = await IoC.API.BillByIDAsync(_Bill.ID);
                 _Bill.AddEmptyProperties<Bill>(details);
+                var subjects = await IoC.API.BillSubjectsByIDAsync(_Bill.ID);
+                _Bill.AddEmptyProperties<Bill>(subjects);
                 _Bill.DetailsAdded = true;
                 UnlockProperty(nameof(_Bill));
                 NotifyProperties();
@@ -67,6 +71,7 @@ namespace Votable.ViewModels
             OnPropertyChanged(nameof(Summary));
             OnPropertyChanged(nameof(Updated));
             OnPropertyChanged(nameof(ShortTitle));
+            OnPropertyChanged(nameof(Subjects));
         }
 
         #endregion

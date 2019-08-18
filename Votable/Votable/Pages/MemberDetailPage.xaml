@@ -50,7 +50,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding ShortTitle}" Command="{Binding SelectedCommand}"
-                          Detail="{Binding SubTitle}"/>
+                          Detail="{Binding Subtitle}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

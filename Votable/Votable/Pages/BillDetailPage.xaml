@@ -17,6 +17,14 @@
         <Label Text="{Binding Updated}"
                 VerticalOptions="Start" 
                 HorizontalOptions="CenterAndExpand" />
-        <Editor Text="{Binding Summary, Mode=OneWay}"/>
+        <Editor Text="{Binding Summary, Mode=OneWay}"
+                HeightRequest="300"/>
+        <ListView ItemsSource="{Binding Subjects}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 </local:BasePage>

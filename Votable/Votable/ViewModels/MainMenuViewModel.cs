@@ -18,6 +18,7 @@ namespace Votable.ViewModels
             {
                 new NavMenuItem("Home", "temp.png", typeof(HomePage)),
                 new NavMenuItem("Senators", "temp.png", typeof(MemberListPage)),
+                new NavMenuItem("Recent Bills", "temp.png", typeof(BillListPage)),
             };
 
         }

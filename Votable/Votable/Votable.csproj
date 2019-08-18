@@ -40,6 +40,9 @@
     <Compile Update="Pages\MemberDetailPage.xaml.cs">
       <DependentUpon>MemberDetailPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Pages\BillListPage.xaml.cs">
+      <DependentUpon>BillListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\MemberListPage.xaml.cs">
       <DependentUpon>MemberListPage.xaml</DependentUpon>
     </Compile>
