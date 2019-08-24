@@ -16,8 +16,6 @@ namespace Votable
 
     public partial class MainPage : MasterDetailPage
     {
-        string _fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "notes.txt");
-
         public MainPage()
         {
             InitializeComponent();

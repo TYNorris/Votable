@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Votable.Pages;
 using Votable.Utilities;
+using Votable.ViewModels;
 using Votable.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -27,22 +28,28 @@ namespace Votable
         {
             IoC.Init();
             // Handle when your app starts
-            OnResume();
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
             Task.Run(() =>
             {
                 IoC.Ready.WaitOne(10000);
                 MainPage = new MainPage();
             });
+        }
+
+        protected override void OnSleep()
+        {
+            // Handle when your app sleeps
+            Save();
+        }
+
+        protected override void OnResume()
+        {
+            // Handle when your app resumes
+
+        }
+
+        private void Save()
+        {
+            IoC.Get<UserViewModel>().Save();
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -48,8 +49,9 @@ namespace Votable
         public bool IsPropertyFree(string property) => !UpdatingProperties.Contains(property);
 
 
-        public void Init()
+        public void InitBaseVM()
         {
+
             SelectedCommand = new RelayCommand(NavigateHere);
         }
 
@@ -72,7 +74,7 @@ namespace Votable
         #endregion
 
         #region Commands
-
+        [JsonIgnore]
         public RelayCommand SelectedCommand { get; set; }
         #endregion
     }

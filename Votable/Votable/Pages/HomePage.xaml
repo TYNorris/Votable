@@ -7,9 +7,9 @@
              xmlns:local="clr-namespace:Votable"
              mc:Ignorable="d"
              x:Class="Votable.Pages.HomePage">
-    <ContentPage.BindingContext>
+    <d:ContentPage.BindingContext>
         <vm:UserViewModel/>
-    </ContentPage.BindingContext>
+    </d:ContentPage.BindingContext>
         <StackLayout>
             <Label Text="Welcome Votable!"
                 VerticalOptions="CenterAndExpand" 

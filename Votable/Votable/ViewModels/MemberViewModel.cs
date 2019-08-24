@@ -47,7 +47,7 @@ namespace Votable.ViewModels
             _Member = mem;
             Bills = new ObservableCollection<BillViewModel>();
             Votes = new ObservableCollection<VoteViewModel>();
-            Init();
+            InitBaseVM();
         }
 
         public MemberViewModel()
@@ -67,7 +67,7 @@ namespace Votable.ViewModels
             };
             Bills = new ObservableCollection<BillViewModel>();
             Votes = new ObservableCollection<VoteViewModel>();
-            Init();
+            InitBaseVM();
         }
         #endregion
 

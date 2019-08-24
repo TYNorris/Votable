@@ -30,6 +30,7 @@ namespace Votable
             Container.Register<FileService>(true);
             Container.Register<NavigationService>(true);
             Container.Register<CongressAPI>(true);
+            Container.Register<UserViewModel>(true);
             API = Get<CongressAPI>();
             API.PropertyChanged += APIDataChanged;
         }

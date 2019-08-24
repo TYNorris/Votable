@@ -16,7 +16,7 @@ namespace Votable.ViewModels
         public VoteViewModel(Vote v)
         {
             _vote = v;
-            Init();
+            InitBaseVM();
         }
     }
 }

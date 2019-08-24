@@ -32,7 +32,7 @@ namespace Votable.ViewModels
         public BillViewModel(Bill bill)
         {
             _Bill = bill;
-            Init();
+            InitBaseVM();
         }
 
         //XAML Constructor
@@ -46,7 +46,7 @@ namespace Votable.ViewModels
                 IntroducedDate = DateTime.Today,
                 HousePassageDate = DateTime.Today
             };
-            Init();
+            InitBaseVM();
         }
         #endregion Constructo
 

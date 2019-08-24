@@ -8,6 +8,8 @@ namespace Votable.Utilities
 {
     public class FileService
     {
+        private static string AppDataPath => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
         private Assembly assembly { get; set; }
         public FileService()
         {
@@ -31,6 +33,21 @@ namespace Votable.Utilities
             {
                 return null;
             }
+        }
+
+
+        public void WriteToFile(string filename, string content)
+        {
+            File.WriteAllText(Path.Combine(AppDataPath, filename), content);
+        }
+        public string ReadFile(string filename)
+        {
+            var path = Path.Combine(AppDataPath, filename);
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            return null;
         }
     }
 }

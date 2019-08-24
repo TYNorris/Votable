@@ -3,31 +3,44 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Linq;
+using Newtonsoft.Json;
+using Votable.Models;
+using Votable.Utilities;
 
 namespace Votable.ViewModels
 {
     public class UserViewModel:BaseViewModel
     {
-        private string _address;
+        private User _user;
+        [JsonProperty]
         public string Address {
-            get => _address;
+            get => _user.Address;
             set
             {
-                if (_address == value)
+                if (_user.Address == value)
                     return;
-                _address = value;
+                _user.Address = value;
                 OnPropertyChanged(Address);
                 UpdateAddress();
             }
         }
 
+        [JsonProperty]
         public ObservableCollection<MemberViewModel> Reps {get;set;}
 
         public UserViewModel()
         {
             Reps = new ObservableCollection<MemberViewModel>();
-            Address = "02134";
-            Init();
+            var userstring = IoC.Get<FileService>().ReadFile(User.UserFile);
+            if (String.IsNullOrEmpty(userstring))
+            {
+                _user = new User();
+            }
+            else
+            {
+                _user = new User(userstring);
+            }
+            InitBaseVM();
         }
 
         public override void OnShow()
@@ -60,5 +73,7 @@ namespace Votable.ViewModels
                 }
             }
         }
+
+        public void Save() => _user.Save();
     }
 }
