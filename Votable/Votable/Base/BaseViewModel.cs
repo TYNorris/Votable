@@ -17,12 +17,12 @@ namespace Votable
         /// <summary>
         /// Called when page appears
         /// </summary>
-        public virtual void OnShow() { }
+        public virtual void OnShow(NavPage Page) { }
 
         /// <summary>
         /// Callded when page disappears
         /// </summary>
-        public virtual void OnHide() { }
+        public virtual void OnHide(NavPage Page) { }
 
 
         #region Public Methods

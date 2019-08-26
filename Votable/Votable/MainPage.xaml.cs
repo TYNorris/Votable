@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Votable.Models;
+using Votable.Utilities;
 
 namespace Votable
 {
@@ -31,5 +32,6 @@ namespace Votable
                 IsPresented = false;
             }
         }
+
     }
 }

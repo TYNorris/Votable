@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Votable.Utilities;
 using Xamarin.Forms;
 
 namespace Votable
@@ -14,7 +15,7 @@ namespace Votable
             base.OnAppearing();
             if (BindingContext is BaseViewModel vm)
             {
-                vm.OnShow();
+                vm.OnShow(NavigationService.AsNavPage(this));
             }
         }
 
@@ -23,7 +24,7 @@ namespace Votable
             base.OnDisappearing();
             if (BindingContext is BaseViewModel vm)
             {
-                vm.OnHide();
+                vm.OnHide(NavigationService.AsNavPage(this));
             }
         }
     }

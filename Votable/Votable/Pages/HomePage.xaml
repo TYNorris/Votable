@@ -10,25 +10,43 @@
     <d:ContentPage.BindingContext>
         <vm:UserViewModel/>
     </d:ContentPage.BindingContext>
+    <ScrollView>
         <StackLayout>
             <Label Text="Welcome Votable!"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" />
-        <StackLayout Margin="20">
-            <Label Text="Address:"></Label>
-            <Entry Text="{Binding Address}"></Entry>
-        </StackLayout>
-        <ListView x:Name="listView"
+            <StackLayout Margin="20">
+                <Label Text="Address:"></Label>
+                <Entry Text="{Binding Address}"></Entry>
+            </StackLayout>
+            <Button Margin="10" 
+                Text="Choose Interests" 
+                Command="{Binding NavigateToInterests}"></Button>
+            <Label Margin="10" Text="Bills To Watch"></Label>
+            <ListView x:Name="interestList"
               Margin="20"
-              ItemsSource="{Binding Reps}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding FullName}"
+              HeightRequest="100"
+              ItemsSource="{Binding RelevantBills}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding ShortTitle}"
                           Detail="{Binding Subtitle}" 
                               Command="{Binding SelectedCommand}"/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackLayout>
-   
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Label Margin="10" Text="Your Representatives"></Label>
+            <ListView x:Name="listView"
+              Margin="20"
+              ItemsSource="{Binding Reps}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding FullName}"
+                          Detail="{Binding Subtitle}" 
+                              Command="{Binding SelectedCommand}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ScrollView>
 </local:BasePage>

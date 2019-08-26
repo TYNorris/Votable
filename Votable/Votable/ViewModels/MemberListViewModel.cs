@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using Votable.Models;
+using Votable.Utilities;
 
 namespace Votable.ViewModels
 {
@@ -21,9 +22,9 @@ namespace Votable.ViewModels
             }
         }
 
-        public override void OnShow()
+        public override void OnShow(NavPage Page)
         {
-            base.OnShow();
+            base.OnShow(Page);
             Members = IoC.Senators;
         }
 

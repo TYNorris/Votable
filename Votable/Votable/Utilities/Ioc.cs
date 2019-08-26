@@ -20,19 +20,30 @@ namespace Votable
         public static ManualResetEvent Ready;
 
         private static ISimpleIoc Container;
-        
+        private static bool IsInitialized = false;
+
         public static void Init()
         {
-            Container = SimpleIoc.Default;
-            Ready = new ManualResetEvent(false);
-            Senators = new ObservableCollection<MemberViewModel>();
-            RecentBills = new ObservableCollection<BillViewModel>();
-            Container.Register<FileService>(true);
-            Container.Register<NavigationService>(true);
-            Container.Register<CongressAPI>(true);
-            Container.Register<UserViewModel>(true);
-            API = Get<CongressAPI>();
-            API.PropertyChanged += APIDataChanged;
+            if (!IsInitialized)
+            {
+                Container = SimpleIoc.Default;
+                Ready = new ManualResetEvent(false);
+                Senators = new ObservableCollection<MemberViewModel>();
+                RecentBills = new ObservableCollection<BillViewModel>();
+                Container.Register<FileService>(true);
+                Container.Register<NavigationService>(true);
+                Container.Register<CongressAPI>(true);
+                Container.Register<UserViewModel>(true);
+                API = Get<CongressAPI>();
+                API.PropertyChanged += APIDataChanged;
+                IsInitialized = true;
+            }
+
+        }
+
+        public static void OnResume()
+        {
+            Get<CongressAPI>().OnResume();
         }
 
         public static T Get<T>() => Container.GetInstance<T>();

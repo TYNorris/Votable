@@ -8,6 +8,7 @@
              mc:Ignorable="d"
              MasterBehavior="Popover"
              x:Class="Votable.MainPage"
+             
              Title="Votable">
     <MasterDetailPage.Master>
         <v:MainMenuPage x:Name="masterPage" />

@@ -44,7 +44,7 @@ namespace Votable
         protected override void OnResume()
         {
             // Handle when your app resumes
-
+            IoC.OnResume();
         }
 
         private void Save()

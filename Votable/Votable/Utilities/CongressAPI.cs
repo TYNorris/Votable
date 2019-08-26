@@ -58,10 +58,14 @@ namespace Votable
             ProPublica.Timeout = 10000;
             GoogleCivics.Timeout = 10000;
 
+            OnResume();
+        }
+
+        public void OnResume()
+        {
             FetchSenators();
             FetchRecentBills();
         }
-
         private void FetchSenators()
         {
             Task.Run(async () =>
@@ -119,6 +123,26 @@ namespace Votable
                    return new List<Bill>();
                }
            });
+        }
+
+
+        public async Task<List<Bill>> BillsBySubjectAsync(string subject)
+        {
+            return await Task.Run(async () =>
+            {
+                //querry bills from specific member
+                var data = await Query<RestResult<Bill>>(ProPublica, "bills/subjects/" + subject + ".json");
+                if (data != null)
+                {
+                    //Get data from result
+                    return data.Results;
+                }
+                else
+                {
+                    //Return empty result on fail
+                    return new List<Bill>();
+                }
+            });
         }
 
         public async Task<Bill> BillByIDAsync(string billID)

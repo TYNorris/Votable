@@ -17,23 +17,91 @@ namespace Votable.Utilities
         {
 
         }
-        public async Task NavigateToMember(BaseViewModel vm)
+        public async Task NavigateToMember(BaseViewModel vm, NavPage P = NavPage.Unknown)
         {
-            if (vm is MemberViewModel member)
+            Type T = null;
+            if (P == NavPage.Unknown)
             {
-                await (App.Current as App).Navigation.PushAsync(new MemberDetailPage()
+                if (vm is MemberViewModel)
                 {
-                    BindingContext = member
-                });
+                    T = typeof(MemberDetailPage);
+                    P = NavPage.MemberDetail;
+                }
+                else if (vm is BillViewModel)
+                {
+                    T = typeof(BillDetailPage);
+                    P = NavPage.BillDetail;
+                }
             }
-            else if(vm is BillViewModel bill)
+            else
             {
-                await (App.Current as App).Navigation.PushAsync(new BillDetailPage()
+                switch(P)
                 {
-                    BindingContext = bill
-                });
+                    case (NavPage.UserInterest):
+                        T = typeof(UserInterestPage);
+                        break;
+                    case (NavPage.BillList):
+                        T = typeof(BillListPage);
+                        break;
+                    case (NavPage.MemberList):
+                        T = typeof(MemberListPage);
+                        break;
+                }
             }
+            if (T != null)
+            {
+                var obj = T.GetConstructor(new Type[] { }).Invoke(new object[] { });
+                if (obj is Page page)
+                {
+                    page.BindingContext = vm;
+                    await (App.Current as App).Navigation.PushAsync(page);
+                    
+                }
+            }
+
         }
 
+        public static NavPage AsNavPage(Page P)
+        {
+            if(P is HomePage)
+            {
+                return NavPage.Home;
+            }
+            if (P is BillListPage)
+            {
+                return NavPage.BillList;
+            }
+            if (P is BillDetailPage)
+            {
+                return NavPage.BillDetail;
+            }
+            if (P is MemberDetailPage)
+            {
+                return NavPage.MemberDetail;
+            }
+            if (P is MemberListPage)
+            {
+                return NavPage.MemberList;
+            }
+            if (P is UserInterestPage)
+            {
+                return NavPage.UserInterest;
+            }
+            throw new NotImplementedException(P.GetType() + " is not supported as NavPage");
+        }
+
+        
+
+    }
+
+    public enum NavPage
+    {
+        Unknown,
+        Home,
+        MemberList,
+        MemberDetail,
+        BillList,
+        BillDetail,
+        UserInterest,
     }
 }

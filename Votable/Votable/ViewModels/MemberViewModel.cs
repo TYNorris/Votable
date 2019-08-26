@@ -73,9 +73,9 @@ namespace Votable.ViewModels
 
 
         #region Public Methods
-        public override void OnShow()
+        public override void OnShow(NavPage Page)
         {
-            base.OnShow();
+            base.OnShow(Page);
             Update();
         }
         #endregion Public Methods

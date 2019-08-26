@@ -6,13 +6,14 @@ using System.Linq;
 using Newtonsoft.Json;
 using Votable.Models;
 using Votable.Utilities;
+using Votable.Pages;
+using System.Collections.Specialized;
 
 namespace Votable.ViewModels
 {
     public class UserViewModel:BaseViewModel
     {
-        private User _user;
-        [JsonProperty]
+        #region Public Properties
         public string Address {
             get => _user.Address;
             set
@@ -25,12 +26,21 @@ namespace Votable.ViewModels
             }
         }
 
-        [JsonProperty]
         public ObservableCollection<MemberViewModel> Reps {get;set;}
 
+        public ObservableCollection<UserInterest> Interests { get; set; }
+
+        public ObservableCollection<BillViewModel> RelevantBills { get; set; }
+
+        #endregion
+
+        #region Ctor
         public UserViewModel()
         {
             Reps = new ObservableCollection<MemberViewModel>();
+            Interests = new ObservableCollection<UserInterest>();
+            RelevantBills = new ObservableCollection<BillViewModel>();
+            NavigateToInterests = new RelayCommand(ChooseInterests);
             var userstring = IoC.Get<FileService>().ReadFile(User.UserFile);
             if (String.IsNullOrEmpty(userstring))
             {
@@ -43,10 +53,57 @@ namespace Votable.ViewModels
             InitBaseVM();
         }
 
-        public override void OnShow()
+        private async void UpdateRelevantBills()
         {
-            base.OnShow();
+            RelevantBills.Clear();
+            foreach(var i in Interests)
+            {
+                if(i.Enabled)
+                {
+                    var bills = await IoC.API.BillsBySubjectAsync(i.Title);
+                    if (bills != null)
+                    {
+                        foreach (var b in bills)
+                        {
+                            if (RelevantBills.Count < 5)
+                            {
+                                RelevantBills.Add(new BillViewModel(b));
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Fields
+
+        private User _user;
+        #endregion
+
+        #region Commands
+        public RelayCommand NavigateToInterests { get; set; }
+        #endregion
+
+        #region Public Methods
+        public override void OnShow(NavPage Page)
+        {
+            base.OnShow(Page);
             UpdateAddress();
+        }
+
+        public override void OnHide(NavPage Page)
+        {
+            base.OnHide(Page);
+            if(Page == NavPage.UserInterest)
+            {
+                UpdateRelevantBills();
+            }
         }
 
         public async void UpdateAddress()
@@ -75,5 +132,26 @@ namespace Votable.ViewModels
         }
 
         public void Save() => _user.Save();
+        #endregion
+
+        #region Private Methods 
+
+        private async void ChooseInterests()
+        {
+            InitInterests();
+            await IoC.Get<NavigationService>().NavigateToMember(this, NavPage.UserInterest);
+        }
+        private void InitInterests()
+        {
+            if (Interests.Count == 0)
+            {
+                Interests.Add(new UserInterest("Voting", true));
+                Interests.Add(new UserInterest("Climate", false));
+                Interests.Add(new UserInterest("Defense", false));
+                Interests.Add(new UserInterest("Education", false));
+                Interests.Add(new UserInterest("Budget", false));
+            }
+        }
+        #endregion
     }
 }
