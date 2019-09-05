@@ -13,11 +13,14 @@ namespace Votable.Models
 
         public Type Target { get; set; }
 
-        public NavMenuItem(string title, string icon, Type target)
+        public BaseViewModel ViewModel { get; set; }
+
+        public NavMenuItem(string title, string icon, Type target, BaseViewModel vm = null)
         {
             Title = title;
             Icon = icon;
             Target = target;
+            ViewModel = vm;
         }
 
     }

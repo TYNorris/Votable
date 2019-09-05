@@ -30,6 +30,10 @@ namespace Votable
                 Detail = new NavigationPage((Page)Activator.CreateInstance(item.Target));
                 masterPage.navList.SelectedItem = null;
                 IsPresented = false;
+                if(item.ViewModel != null)
+                {
+                    Detail.BindingContext = item.ViewModel;
+                }
             }
         }
 

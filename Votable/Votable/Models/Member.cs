@@ -125,6 +125,9 @@ namespace Votable.Models
 
         public string State { get; set; }
 
+        [JsonProperty(PropertyName ="district")]
+        public string District { get; set; }
+
         [JsonProperty(PropertyName = "senate_class")]
 
         public string SenateClass { get; set; }

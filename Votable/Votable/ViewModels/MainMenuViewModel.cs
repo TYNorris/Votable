@@ -17,7 +17,8 @@ namespace Votable.ViewModels
             Pages = new ObservableCollection<NavMenuItem>()
             {
                 new NavMenuItem("Home", "temp.png", typeof(HomePage)),
-                new NavMenuItem("Senators", "temp.png", typeof(MemberListPage)),
+                new NavMenuItem("Senators", "temp.png", typeof(MemberListPage), new MemberListViewModel(true,false)),
+                new NavMenuItem("House Members", "temp.png", typeof(MemberListPage), new MemberListViewModel(false,true)),
                 new NavMenuItem("Recent Bills", "temp.png", typeof(BillListPage)),
             };
 

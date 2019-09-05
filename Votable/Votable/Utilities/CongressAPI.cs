@@ -45,12 +45,15 @@ namespace Votable
 
         public List<Member> Senators { get; set; }
 
+        public List<Member> HouseMembers { get; set; }
+
         public List<Bill> AllBills { get; set; }
          
         public CongressAPI()
         {
             JObject Keys = JObject.Parse( IoC.Get<FileService>().GetEmbeddedResource("Keys.json"));
             Senators = new List<Member>();
+            HouseMembers = new List<Member>();
             AllBills = new List<Bill>();
             //Add api key and extend timeout
             ProPublica.AddDefaultHeader("X-API-Key", Keys["ProPublica"].ToString());
@@ -64,6 +67,7 @@ namespace Votable
         public void OnResume()
         {
             FetchSenators();
+            FetchHouseMembers();
             FetchRecentBills();
         }
         private void FetchSenators()
@@ -80,6 +84,26 @@ namespace Votable
                         Senators.Add(s);
                     }
                     OnPropertyChanged(nameof(Senators));
+
+                }
+
+            });
+        }
+
+        private void FetchHouseMembers()
+        {
+            Task.Run(async () =>
+            {
+                //query current senators
+                var data = await Query<RestResult<Chamber>>(ProPublica, "116/house/members.json");
+                if (data != null)
+                {
+                    var results = data.Results.First().Members;
+                    foreach (var s in results)
+                    {
+                        HouseMembers.Add(s);
+                    }
+                    OnPropertyChanged(nameof(HouseMembers));
 
                 }
 
@@ -176,18 +200,38 @@ namespace Votable
 
         public async Task<string> StateCodeByAddress(string address)
         {
+            var location = await StateInfoByAddress(address, "representatives?levels=country&roles=legislatorUpperBody&address=");
+            if (!string.IsNullOrEmpty(location))
+            {
+                return location.Split(':').Last();
+            }
+            return "";
+        }
+        public async Task<string> HouseDistrictByAddress(string address)
+        {
+            var location = await StateInfoByAddress(address, "representatives?levels=country&roles=legislatorLowerBody&address=");
+            if (!string.IsNullOrEmpty(location))
+            {
+                var district = location.Split(':').Last();
+                var state = location.Substring(0, location.LastIndexOf("/")).Split(':').Last();
+                return state + "/" + district;
+            }
+            return "";
+        }
+
+        private async Task<string> StateInfoByAddress(string address, string query)
+        { 
             return await Task.Run(async () =>
             {
                 //querry bills from specific member
-                var response = await Query<JObject>(GoogleCivics, "representatives?levels=country&roles=legislatorUpperBody&address=" + address +
+                var response = await Query<JObject>(GoogleCivics,  query + address +
                                                                      "&key=" + googleAPIkey);
                 if (response != null)
                 {
                     if(response["divisions"] != null)
                     {
                         var div = response["divisions"] as JObject;
-                        var location = div.Properties().Select(p => p.Name).First();
-                        return location.Split(':').Last();
+                        return div.Properties().Select(p => p.Name).First();
                     }
 
                     return "";

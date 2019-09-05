@@ -29,6 +29,7 @@ namespace Votable
                 Container = SimpleIoc.Default;
                 Ready = new ManualResetEvent(false);
                 Senators = new ObservableCollection<MemberViewModel>();
+                HouseMembers = new ObservableCollection<MemberViewModel>();
                 RecentBills = new ObservableCollection<BillViewModel>();
                 Container.Register<FileService>(true);
                 Container.Register<NavigationService>(true);
@@ -66,6 +67,17 @@ namespace Votable
                 }
                 Ready.Set();
             }
+            //Update current list of house members 
+            if (e.PropertyName.Equals(nameof(CongressAPI.HouseMembers)))
+            {
+                HouseMembers.Clear();
+                foreach (var s in API.HouseMembers)
+                {
+                    HouseMembers.Add(new MemberViewModel(s));
+                }
+                Ready.Set();
+            }
+            //Update current list of bills
             if (e.PropertyName.Equals(nameof(CongressAPI.AllBills)))
             {
                 RecentBills.Clear();
@@ -86,7 +98,21 @@ namespace Votable
             else return new List<MemberViewModel>();    
         }
 
+        public static async Task<MemberViewModel> HouseMemberByAddress(string address)
+        {
+            var district = await API.HouseDistrictByAddress(address);
+            if (!string.IsNullOrEmpty(district))
+            {
+                var split = district.Split('/');
+                return HouseMembers.First(m => m.State.Equals(split.First(), StringComparison.OrdinalIgnoreCase) &&
+                                                m.District.Equals(split.Last()));
+            }
+            else return null;
+        }
+
+
         public static ObservableCollection<MemberViewModel> Senators { get; private set; }
+        public static ObservableCollection<MemberViewModel> HouseMembers { get; private set; }
         public static ObservableCollection<BillViewModel> RecentBills { get; private set; }
     }
 }

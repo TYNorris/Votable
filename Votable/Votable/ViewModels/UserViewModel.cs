@@ -119,6 +119,8 @@ namespace Votable.ViewModels
                     {
                         Reps.Add(s);
                     }
+                    var house = await IoC.HouseMemberByAddress(Address);
+                    Reps.Add(house);
                 }
                 catch(Exception ex)
                 {

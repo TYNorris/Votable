@@ -31,6 +31,8 @@ namespace Votable.ViewModels
 
         public string State => _Member.State;
 
+        public string District => _Member.District;
+
         public ObservableCollection<BillViewModel> Bills { get; set; }
         public ObservableCollection<VoteViewModel> Votes { get; set; }
         #endregion

@@ -7,9 +7,6 @@
              xmlns:local="clr-namespace:Votable"
              mc:Ignorable="d"
              x:Class="Votable.Views.MemberListPage">
-    <local:BasePage.BindingContext>
-        <vm:MemberListViewModel/>
-    </local:BasePage.BindingContext>
     <local:BasePage.Content>
         <StackLayout>
             <ListView x:Name="listView"
